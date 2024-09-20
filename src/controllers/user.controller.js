@@ -265,30 +265,64 @@ const updateAccountUser = asyncHandler( async (req, res) => {
 
 
 
-const updateAvatarUpdate = asyncHandler(async(req,res) => {
-
+const updateUserAvatar = asyncHandler(async(req, res) => {
     const avatarLocalPath = req.file?.path
-console.log(avatarLocalPath)
-// if(!avatarLocalPath){
-//     throw new ApiError(401, " Avatar file is missing")
-// }
-// const user = await User.findByIdAndUpdate(
-//     req.user._id,
-//     {
-//         $set:{
-//             avatar: avatarLocalPath
-//         }
-//     },
-//     {
-//         new:true
-//     }
-// ).select("-password")
-// return res
-//     .status(200)
-//     .json(
-//         new ApiResponse(200, user, "Avatar image updated successfully")
-//     )
+    //console.log(avatarLocalPath);
 
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is missing")
+    }
+
+    // //TODO: delete old image - assignment
+
+    // const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+    // if (!avatar.url) {
+    //     throw new ApiError(400, "Error while uploading on avatar")
+        
+    // }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                avatar: avatarLocalPath
+            }
+        },
+        {new: true}
+    ).select("-password")
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, user, "Avatar image updated successfully")
+    )
+})
+
+
+const updateUserCoverImage = asyncHandler(async(req, res) => {
+    const coverImageLocalPath = req.file?.path
+    //console.log(avatarLocalPath);
+
+    if (!coverImageLocalPath) {
+        throw new ApiError(400, "Cover Image file is missing")
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                coverImage: coverImageLocalPath
+            }
+        },
+        {new: true}
+    ).select("-password")
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, user, "Cover image updated successfully")
+    )
 })
 
    
@@ -299,4 +333,5 @@ export { registerUser,
          changeCurrentPassword,
          getCurentUser,
          updateAccountUser,
-         updateAvatarUpdate }
+         updateUserAvatar,
+         updateUserCoverImage }
